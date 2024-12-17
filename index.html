@@ -12,37 +12,178 @@
 
             if (gasto === "Administrativo") {
                 tabla.innerHTML = `
-                    <tr>
-                        <th>Concepto</th>
-                        <th>Descripción</th>
-                    </tr>
-                    <tr>
-                        <td>Solicitud</td>
-                        <td><input type="text" name="Solicitud_Administrativa" placeholder="Me gustaría solicitar..."/></td>
-                    </tr>
-                    <tr>
-                        <td>Costo Aproximado</td>
-                        <td><input type="number" name="Monto_Solicitado" /></td>
-                    </tr>
+                <div style="display: flex; gap: 20px; justify-content: center;">
+                    <table border="1"> 
+                        <tr>
+                            <td>Solicita</td>
+                            <td><input type="text" name="Solicita" placeholder="¿Quién lo solicita?"/></td>
+                            <td>No. Gasto</td>
+                            <td><input type="text" name="Gasto" placeholder="Coloca No. Gasto..."/></td>
+                            <td>Fecha</td>
+                            <td><input type="date" name="Fecha" /></td>
+                        </tr>
+
+
+                    </table>
+
+                    <table border="1"> 
+                        <tr>
+                            <td>Pre cotización</td>
+                            <td><input type="checkbox" id="pre-cotizacion" name="pre cotización"></td>
+                            <td>Cotización</td>
+                            <td><input type="checkbox" name="Cotización"></td>
+                        </tr>
+                    </table>
+
+                    <table border="1"> 
+                        <tr>
+                            <td>Empresa</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <select id="empresa_options" name="empresa_options" class="dropdown">
+                                        <option value="null">Selecciona empresa</option>
+                                        <option value="Cafetal">Cafetal</option>
+                                        <option value="Edificaciones">Edificaciones</option>
+                                        <option value="Fresh & Limp">Fresh & Limp</option>
+                                        <option value="Ofic. 1104">Ofic. 1104</option>
+                                        <option value="Ofic. 1403">Ofic. 1403</option>
+                                        <option value="UR">UR</option>
+                                        <option value="Personal">Personal</option>
+                                        <option value="Servicio">Servicio</option>
+                                        <option value="Otros">Otros</option>                                                                                                                                                                                         
+                                    </select>
+                                </div>
+                            </td>
+                            <td>Zona</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <select id="zona_options" name="zona_options" class="dropdown">
+                                        <option value="null">Selecciona una zona</option>
+                                        <option value="GDL">GDL</option>
+                                        <option value="PUE">PUE</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Compra solicitada</td>
+                            <td colspan="7"><input type="text" name="Compra" placeholder="Me gustaría solicitar...." style="width: 100%;"/></td>
+                        </tr>
+                        <tr>
+                            <td>Coordinador</td>
+                            <td><input type="text" name="Responsable" placeholder="Responsable" /></td>
+                            <td>Anticipo</td>
+                            <td><input type="number" name="Anticipo" placeholder="Monto de anticipo..."/></td> 
+                        </tr>
+                    </table>
+                </div>
                 `;
             } else if (gasto === "Servicio") {
                 tabla.innerHTML = `
-                    <tr>
-                        <th>Concepto</th>
-                        <th>Descripción</th>
-                    </tr>
-                    <tr>
-                        <td>Solicitud</td>
-                        <td><input type="text" name="Solicitud_Administrativa" placeholder="Me gustaría solicitar..."/></td>
-                    </tr>
-                    <tr>
-                        <td>Costo Aproximado</td>
-                        <td><input type="number" name="Monto_Solicitado" /></td>
-                    </tr>
+                <div style="display: flex; gap: 20px; justify-content: center;">
+                    <table border="1"> 
+                        <tr>
+                            <td>Folio</td>
+                            <td><input type="text" name="Folio" placeholder="No. Folio"/></td>
+                            <td>Fecha</td>
+                            <td><input type="date" name="Fecha" /></td>
+                            <td>Monto</td>
+                            <td><input type="number" name="Monto" placeholder="Monto"/></td>
+                        </tr>
+                        <tr>
+                            <td>Responsable</td>
+                            <td><input type="text" name="Responsable" placeholder="Responsable" /></td>
+                            <td>Descripción</td>
+                            <td><input type="text" name="Descripción" placeholder="Descripción"/></td> 
+                            <td>Justificación</td>
+                            <td><input type="text" name="Justificación" placeholder="Justificación"/></td>
+                        </tr>
+                        <tr>
+                            <td>Revisión</td>
+                            <td><input type="text" name="Revisión" placeholder="Revisión"/></td>
+                            <td>Aprobado por</td>
+                            <td><input type="text" name="Aprobado" placeholder="Aprobado por"/></td>
+                            <td>Evidencia</td>
+                            <td><input type="file" name="Evidencia"/></td>
+                        </tr>
+                    </table>
+
+                    <table border="1"> 
+                        <tr>
+                            <td>Pre cotización</td>
+                            <td><input type="checkbox" id="pre-cotizacion" name="pre cotización"></td>
+                            <td>Cotización</td>
+                            <td><input type="checkbox" name="Cotización"/></td>
+                            <td>Aprobación</td>
+                            <td><input type="checkbox" name="Aprobación"></td>
+                            <td>Confirmación</td>
+                            <td><input type="checkbox" name="Confirmación"></td>
+                        </tr>
+                    </table>
+
+                    <table border="1"> 
+                        <tr>
+                            <td>Empresa</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <select id="empresa_options" name="empresa_options" class="dropdown">
+                                        <option value="null">Selecciona empresa</option>
+                                        <option value="ISI">ISI</option>
+                                        <option value="MSC">MSC</option>
+                                        <option value="BSC">MIC</option>
+                                        <option value="ISIN">ISIN</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>Zona</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <select id="zona_options" name="zona_options" class="dropdown">
+                                        <option value="null">Selecciona una zona</option>
+                                        <option value="GDL">GDL</option>
+                                        <option value="MEX">MEX</option>
+                                        <option value="PUE">PUE</option>
+                                        <option value="QRO">QRO</option>
+                                        <option value="VER">VER</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>Sector</td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <select id="sector_options" name="sector_options" class="dropdown">
+                                        <option value="null">Selecciona sector</option>
+                                        <option value="Finanzas">Finanzas</option>
+                                        <option value="Tecnología">Tecnología</option>
+                                        <option value="Salud">Salud</option>
+                                        <option value="Educación">Educación</option>
+                                        <option value="Manufactura">Manufactura</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Comentarios</td>
+                            <td colspan="7"><input type="text" name="Comentarios" placeholder="Comentarios" style="width: 100%;"/></td>
+                        </tr>
+                    </table>
+                </div>
                 `;
             } else {
                 tabla.innerHTML = "";
             }
+        }
+
+        function enviarFormulario() {
+            const scriptURL = 'https://docs.google.com/spreadsheets/d/1mEbuxY2PBeOh8HHpFGOm_49xM_kqzPhY28QrgKY2u6A/edit?usp=sharing';  // Reemplaza YOUR_SCRIPT_ID con tu ID de script
+            const form = document.forms['google-sheet'];
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                    .then(response => alert('Formulario enviado exitosamente'))
+                    .catch(error => console.error('Error!', error.message))
+            });
         }
     </script>
 </head>
@@ -68,9 +209,9 @@
         <div class="header">
             <h3>Solicitud</h3>
             <div class="logo-container">
-                <img src="Logos\Logo ISI simple.png" alt="Logo ISI simple">
-                <img src="Logos\logo mic.jpg" alt="Logo mic">
-                <img src="Logos\Logo CSM sello.png" alt="Logo CSM Sello">
+                <img src="C:\Users\octav\OneDrive\Documentos\Programas\HTML & CSS\ISI_OP2\Logos\Logo ISI simple.png" alt="Logo ISI simple">
+                <img src="C:\Users\octav\OneDrive\Documentos\Programas\HTML & CSS\ISI_OP2\Logos\logo mic.jpg" alt="Logo mic">
+                <img src="C:\Users\octav\OneDrive\Documentos\Programas\HTML & CSS\ISI_OP2\Logos\Logo CSM sello.png" alt="Logo CSM Sello">
             </div>
         </div>
         <p></p>
@@ -86,9 +227,11 @@
             </div>
             <p></p>
             <table id="tablaGastos"></table>
+            <button type="submit" onclick="enviarFormulario()">Enviar</button>
         </form>
     </div>
 </body>
 </html>
+
 
 
