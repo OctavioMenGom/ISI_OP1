@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISI</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" href="images/Logo-ISI-simple.ico" type="image/x-icon">
+    <script>
+        function cambiarContenido() {
+            var select = document.getElementById("opciones");
+            var contenido = document.getElementById("contenido");
+            switch (select.value) {
+                case "Servicio":
+                    contenido.innerHTML = `
+                        <div class="container">
+        <div class="header">
+            <div class="header-container"> 
+                <h1>No. Folio</h1> 
+                <h2 id="tipoCotizacionTitulo">Cotización</h2>
+
+            </div>
+
+            <div class="logo-container" id="logo-container">
+                <!-- Los logos se mostrarán aquí -->
+            </div>
+        </div>
+        <form name="google-sheet" autocomplete="off" method="post">
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <table>
+                    <tr>
+                        <td>Folio</td>
+                        <td>
+                            <div style="display: flex; align-items: center;" id="folio-section" class="hidden">
+                                <input type="text" id="folioInput" name="Folio" placeholder="Introduce el folio" required />
+                                <button type="button" id="folioButton" onclick="generateFolio()">Generar Folio</button>
+                            </div>
+                        </td>
+                        <td>Pre cotización</td>
+                        <td><input type="radio" id="preCotizacion" name="tipoCotizacion" value="pre-cotizacion" onclick="toggleSections()" required/></td>
+                        <td>Cotización</td>
+                        <td><input type="radio" id="cotizacion" name="tipoCotizacion" value="cotizacion" onclick="toggleSections()" required/></td>
+                        <td>Fecha</td>
+                    </tr>
+                    <tr>
+                        <td>Empresa</td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <select id="empresa_options" name="empresa_options" class="dropdown" onchange="changeLogo()" required>
+                                    <option value="null">Selecciona empresa</option>
+                                    <option value="ISI">ISI</option>
+                                    <option value="CSM">CSM</option>  
+                                    <option value="MIC">MIC</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>Garantía</td> 
+                        <td><input type="text" id="garantia" name="Folio" placeholder="Introduce No. Garantía..."/></td>
+                        <td>Zona</td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <select id="zona_options" name="zona_options" class="dropdown" required>
+                                    <option value="null">Selecciona zona...</option>
+                                    <option value="GDL">GDL</option> 
+                                    <option value="MEX">MEX</option> 
+                                    <option value="PUE">PUE</option> 
+                                    <option value="QRO">QRO</option> 
+                                    <option value="VER">VER</option> 
+                                </select>
+                            </div>
+                        </td>
+                        <td> 
+                            <input type="date"/> 
+                        </td> 
+                    </tr>
+                </table>
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <!-- Tabla de clientes -->
+                <div style="display: flex; gap: 20px;">
+                    <table border="1">
+                        <tr>
+                            <td>Atiende</td>
+                            <td>
+                                <select id="selectorHoja1">
+                                    <option value="" disabled selected>¿Quién atiende?</option>
+                                </select>
+                            </td> 
+                            <td></td>
+                            <td>Planta</td>
+                            <td>Revolvedora</td>
+                        </tr>
+                        <tr>
+                            <td>No. Cliente</td>
+                            <td>
+                                <select id="selectorHoja2">
+                                    <option value="" disabled selected>¿Quién es el cliente?</option>
+                                </select>
+                            </td> 
+                            <td>Servicio</td>
+                            <td><input type="checkbox"/></td>
+                            <td><input type="checkbox"/></td>
+                        </tr>
+                        <tr>
+                            <td>Cliente</td>
+                            <td>
+                                <select>
+                                    <option>¿Quién es el cliente?</option>
+                                </select>
+                            </td> 
+                            <td>Mov/Trasl</td>
+                            <td><input type="checkbox"/></td>
+                            <td><input type="checkbox"/></td>
+                        </tr>
+                        <tr>
+                            <td>Solicita</td>
+                            <td colspan="4">
+                                <input type="text" id="nombreSolicita" name="nombreSolicita" placeholder="¿Quién solicita?...">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Falla reportada</td>
+                            <td colspan="4"><input type="text" id="falla" name="falla" placeholder="Describe la falla..." required></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Tabla de gastos -->
+                <div id="gastos-section" class="hidden">
+                    <table border="1"> 
+                        <caption><b>Gastos</b></caption>
+                        <tr> 
+                            <td><b>Forma de Pago</b></td> 
+                            <td> 
+                                <select id="pago_options1" name="pago_options1" class="dropdown" style="margin-right: 10px;"> 
+                                    <option value="null">Opción de pago</option> 
+                                    <option value="tarjeta">Tarjeta</option> 
+                                    <option value="efectivo">Efectivo</option> 
+                                    <option value="transferencia">Transferencia</option> 
+                                </select> 
+                                <input type="text" id="ReferenciaDePago" name="ReferenciaDePago" placeholder="Referencia de Pago"> 
+                            </td> 
+                        </tr> 
+                        <tr> 
+                            <td><b>Fact / Ticket</b></td> 
+                            <td><input type="text" name="input2_row0" /></td> 
+                        </tr> 
+                        <tr> 
+                            <td><b>Monto</b></td> 
+                            <td><input type="text" id="monto" name="monto" readonly/></td> 
+                        </tr> 
+                    </table>
+                </div>
+            </div>
+            <!-- Contenedor para la tabla dinámica -->
+            <div id="dynamicTableContainer" class="hidden" style="display: flex; gap: 20px; justify-content: center;">
+                <table id="dynamicTable"> 
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>UM</th>
+                        <th>Descripción</th>
+                        <th>P.U.</th>
+                        <th>Costo</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="cantidad" onchange="calcularCosto()"/></td>
+                        <td><input type="text" name="um" /></td> 
+                        <td><input type="text" name="descripcion" /></td>
+                        <td><input type="text" name="cu" onchange="calcularCosto()"/></td> 
+                        <td><input type="text" name="costo" readonly/></td> 
+                    </tr> 
+                </table>
+            </div>
+            
+            <!-- Botones -->
+            <div id="buttonContainer" class="hidden button-container">
+                <button class="add" type="button" onclick="addRow('dynamicTable')">+</button>
+                <button class="remove" type="button" onclick="removeRow('dynamicTable')">-</button>
+            </div>
+            <div id="tableContainer" class="hidden table-container">
+                <!-- Las tablas adicionales se agregarán aquí -->
+            </div>
+            
+            <!-- Tabla Final -->
+            <div id="finalTableContainer" class="hidden" style="display: flex; gap: 20px; justify-content: flex-end; width: 690px; margin-left: auto;">
+                <table id="finalTable" class="table-full-width"> 
+                    <tr>
+                        <td>Subtotal</td>
+                        <td><input type="text" id="subtotal" name="subtotal" readonly/></td>
+                    </tr>
+                    <tr>
+                        <td>IVA</td>
+                        <td><input type="text" id="iva" name="iva" readonly/></td> 
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td><input type="text" id="total" name="total" readonly/></td> 
+                    </tr>
+                </table>
+            </div>
+                 
+        </form>
+    </div>
+                    `;
+                    break;
+                case "Administrativo":
+                    contenido.innerHTML = 
+                    `
+                    <div class="container">
+        <div class="header">
+            <div class="header-container"> 
+                <h1>No. Gasto</h1> 
+                <h2 id="tipoCotizacionTitulo">Cotización</h2>
+
+            </div>
+
+            <div class="logo-container" id="logo-container">
+                <!-- Los logos se mostrarán aquí -->
+            </div>
+        </div>
+        <form name="google-sheet" autocomplete="off" method="post">
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <table>
+                    <tr>
+                    <td>Solicita</td>
+                    <td><input type="text"</td>
+                    <td>No. Gasto</td>
+                    <td colspan="2">
+                        <div style="display: flex; align-items: center;" id="folio-section" class="hidden">
+                            <input type="text" id="folioInput" name="Folio" placeholder="Introduce el folio" required />
+                            <button type="button" id="folioButton" onclick="generateFolio()">Generar Folio</button>
+                        </div>
+                    </td>
+                    </tr>
+                    <tr>
+
+                        <td>Pre cotización</td>
+                        <td><input type="radio" id="preCotizacion" name="tipoCotizacion" value="pre-cotizacion" onclick="toggleSections()" required/></td>
+                        <td>Cotización</td>
+                        <td><input type="radio" id="cotizacion" name="tipoCotizacion" value="cotizacion" onclick="toggleSections()" required/></td>
+                        <td>Fecha</td>
+                    </tr>
+                    <tr>
+                        <td>Empresa</td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <select id="empresa_options" name="empresa_options" class="dropdown" onchange="changeLogo()" required>
+                                    <option value="null">Selecciona empresa</option>
+                                    <option value="Cafftal">Cafetal</option>
+                                    <option value="Edificaciones">Edificaciones</option>
+                                    <option value="Fresh & Limp">Fresh & Limp</option>
+                                    <option value="ESVA">ESVA</option>
+                                    <option value="Ofic. Servicios">Ofic. Servicios</option>
+                                    <option value="Ofic. Proyectos">Ofic. Proyectos</option>
+                                    <option value="UR">UR</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Servicio">Servicio</option>
+                                    <option value="Otros">Otros</option>                                                                                                                                                                                         
+                                </select>
+                            </div>
+                        </td>
+                        <td>Zona</td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <select id="zona_options" name="zona_options" class="dropdown" required>
+                                    <option value="null">Selecciona zona...</option>
+                                    <option value="GDL">GDL</option>  
+                                    <option value="PUE">PUE</option> 
+                                </select>
+                            </div>
+                        </td>
+                        <td> 
+                            <input type="date"/> 
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td>Compra solicitada</td>
+                        <td colspan="2"><input type="text" name="compraSolicitada" placeholder="Me gustaría solicitar..." required/></td>
+                        <td>Solic. Anticipo</td>
+                        <td><input type="number" placeholder="Introduce la cantidad estimada de lo que vas a solicitar..."/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="display: flex; gap: 20px;">                
+                <!-- Tabla de gastos -->
+                <div id="gastos-section" class="hidden">
+                    <table border="1"> 
+                        <caption><b>Gastos</b></caption>
+                        <tr> 
+                            <td><b>Forma de Pago</b></td> 
+                            <td> 
+                                <select id="pago_options1" name="pago_options1" class="dropdown" style="margin-right: 10px;"> 
+                                    <option value="null">Opción de pago</option> 
+                                    <option value="tarjeta">Tarjeta</option> 
+                                    <option value="efectivo">Efectivo</option> 
+                                    <option value="transferencia">Transferencia</option> 
+                                </select> 
+                                <input type="text" id="ReferenciaDePago" name="ReferenciaDePago" placeholder="Referencia de Pago"> 
+                            </td> 
+                            <td><b>Gasto real</b></td> 
+                            <td><input type="text" id="monto" name="monto" readonly/></td> 
+                        </tr> 
+                    </table>
+                </div>
+            </div>
+            <!-- Contenedor para la tabla dinámica -->
+            <div id="dynamicTableContainer" class="hidden" style="display: flex; gap: 20px; justify-content: center;">
+                <table id="dynamicTable"> 
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>UM</th>
+                        <th>Descripción</th>
+                        <th>P.U.</th>
+                        <th>Costo</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="cantidad" onchange="calcularCosto()"/></td>
+                        <td><input type="text" name="um" /></td> 
+                        <td><input type="text" name="descripcion" /></td>
+                        <td><input type="text" name="cu" onchange="calcularCosto()"/></td> 
+                        <td><input type="text" name="costo" readonly/></td> 
+                    </tr> 
+                </table>
+            </div>
+            
+            <!-- Botones -->
+            <div id="buttonContainer" class="hidden button-container">
+                <button class="add" type="button" onclick="addRow('dynamicTable')">+</button>
+                <button class="remove" type="button" onclick="removeRow('dynamicTable')">-</button>
+            </div>
+            <div id="tableContainer" class="hidden table-container">
+                <!-- Las tablas adicionales se agregarán aquí -->
+            </div>
+            
+            <!-- Tabla Final -->
+            <div id="finalTableContainer" class="hidden" style="display: flex; gap: 20px; justify-content: flex-end; width: 690px; margin-left: auto;">
+                <table id="finalTable" class="table-full-width"> 
+                    <tr>
+                        <td>Subtotal</td>
+                        <td><input type="text" id="subtotal" name="subtotal" readonly/></td>
+                    </tr>
+                    <tr>
+                        <td>IVA</td>
+                        <td><input type="text" id="iva" name="iva" readonly/></td> 
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td><input type="text" id="total" name="total" readonly/></td> 
+                    </tr>
+                </table>
+            </div>
+                 
+        </form>
+    </div>
+                    `;
+                    
+                    break;
+                case "Complementario":
+                    contenido.innerHTML = 
+                     `
+                    <div class="container">
+                            <div class="header">
+                                <div class="header-container"> 
+                                    <h1>Gastos complementarios</h1> 
+                                </div>
+
+                                <div class="logo-container" id="logo-container">
+                                    <!-- Los logos se mostrarán aquí -->
+                                </div>
+                            </div>
+                            <form name="google-sheet" autocomplete="off" method="post">
+                                <!-- Contenedor para la tabla dinámica -->
+                                <div id="dynamicTableContainer" class="hidden" style="display: flex; gap: 20px; justify-content: center;">
+                                    <table id="dynamicTable"> 
+                                        <tr>
+                                            <td>No.Folio / No. Gasto</td>
+                                            <td colspan="4"><input type="number" name="complementario" placeholder="Introduce el folio al que pertenece esta compra complementaria..." /></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Cantidad</th>
+                                            <th>UM</th>
+                                            <th>Descripción</th>
+                                            <th>P.U.</th>
+                                            <th>Costo</th>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="text" name="cantidad" onchange="calcularCosto()"/></td>
+                                            <td><input type="text" name="um" /></td> 
+                                            <td><input type="text" name="descripcion" /></td>
+                                            <td><input type="text" name="cu" onchange="calcularCosto()"/></td> 
+                                            <td><input type="text" name="costo" readonly/></td> 
+                                        </tr> 
+                                    </table>
+                                </div>
+                                
+                                <!-- Botones -->
+                                <div id="buttonContainer">
+                                    <button class="add" type="button" onclick="addRow('dynamicTable')">+</button>
+                                    <button class="remove" type="button" onclick="removeRow('dynamicTable')">-</button>
+                                </div>
+                                <div id="tableContainer" class="hidden table-container">
+                                    <!-- Las tablas adicionales se agregarán aquí -->
+                                </div>                                  
+                            </form>
+                        </div>
+                        `;
+                    break;
+                default:
+                    contenido.innerHTML = 
+                    `<div class="container"><center><p>Selecciona una opción.</p></center></div>`;
+            }
+        }
+
+function changeLogo() {
+    console.log('changeLogo function called'); // Agrega esta línea
+    var empresa = document.getElementById('empresa_options').value;
+    var logoContainer = document.getElementById('logo-container');
+    
+    if (empresa === 'ISI') {
+        logoContainer.innerHTML = '<img src="images/Logo ISI simple.png" alt="Logo ISI simple">';
+    } else if (empresa === 'CSM') {  
+        logoContainer.innerHTML = '<img src="images/Logo CSM sello.png" alt="Logo CSM">';
+    } else if (empresa === 'MIC') {
+        logoContainer.innerHTML = '<img src="images/logo mic.jpg" alt="Logo MIC">';
+    } else if (empresa === 'Cafftal'){
+        logoContainer.innerHTML = '<img src="images/CAFFTAL.png" alt="Logo Cafetal">';
+    } else if (empresa === 'Fresh & Limp'){
+        logoContainer.innerHTML = '<img src="images/Fresh&Limp.jpg" alt="Logo Fresh & Limp">';
+    } else if (empresa === 'ESVA'){
+        logoContainer.innerHTML = '<img src="images/ESVA.jpg" alt="ESVA">';
+    } else {
+        logoContainer.innerHTML = `
+            <img src="images/Logo ISI simple.png" alt="Logo ISI simple">
+            <img src="images/Logo CSM sello.png" alt="Logo CSM">
+            <img src="images/logo mic.jpg" alt="Logo MIC">
+        `;
+    }
+}
+
+function calcularTotal() {
+    const dynamicTable = document.getElementById('dynamicTable');
+    let subtotal = 0;
+
+    // Calcular el subtotal de la tabla principal
+    Array.from(dynamicTable.rows).forEach((row, index) => {
+        if (index > 0) { // Skipping the header row
+            const cantidad = row.cells[0].querySelector('input').value;
+            const cu = row.cells[3].querySelector('input').value;
+            const costoCell = row.cells[4].querySelector('input');
+
+            const costo = parseFloat(cantidad) * parseFloat(cu);
+            costoCell.value = isNaN(costo) ? 0 : costo;
+            subtotal += isNaN(costo) ? 0 : costo;
+        }
+    });
+
+    // Calcular el subtotal de las tablas complementarias
+    const additionalTables = document.getElementById('tableContainer').querySelectorAll('table');
+    additionalTables.forEach(table => {
+        Array.from(table.rows).forEach((row, index) => {
+            if (index > 0) { // Skipping the header row
+                const cantidad = row.cells[0].querySelector('input').value;
+                const cu = row.cells[3].querySelector('input').value;
+                const costoCell = row.cells[4].querySelector('input');
+
+                const costo = parseFloat(cantidad) * parseFloat(cu);
+                costoCell.value = isNaN(costo) ? 0 : costo;
+                subtotal += isNaN(costo) ? 0 : costo;
+            }
+        });
+    });
+
+    document.getElementById('subtotal').value = subtotal.toFixed(2);
+    const iva = subtotal * 0.16;
+    document.getElementById('iva').value = iva.toFixed(2);
+    document.getElementById('total').value = (subtotal + iva).toFixed(2);
+    document.getElementById('monto').value = (subtotal+iva).toFixed(2);
+}
+
+// Función para agregar una fila a la tabla 'dynamicTable'
+function addRow(tableID) {
+    let table = document.getElementById(tableID);
+    let rowCount = table.rows.length;
+    let row = table.insertRow(rowCount);
+
+    // Insertar celdas en la nueva fila
+    let cell1 = row.insertCell(0);
+    let element1 = document.createElement("input");
+    element1.type = "text";
+    element1.name = "cantidad";
+    element1.onchange = function() { calcularTotal(this); };
+    cell1.appendChild(element1);
+
+    let cell2 = row.insertCell(1);
+    let element2 = document.createElement("input");
+    element2.type = "text";
+    element2.name = "um";
+    cell2.appendChild(element2);
+
+    let cell3 = row.insertCell(2);
+    let element3 = document.createElement("input");
+    element3.type = "text";
+    element3.name = "descripcion";
+    cell3.appendChild(element3);
+
+    let cell4 = row.insertCell(3);
+    let element4 = document.createElement("input");
+    element4.type = "text";
+    element4.name = "cu";
+    element4.onchange = function() { calcularTotal(this); };
+    cell4.appendChild(element4);
+
+    let cell5 = row.insertCell(4);
+    let element5 = document.createElement("input");
+    element5.type = "text";
+    element5.name = "costo";
+    element5.readOnly = true;
+    cell5.appendChild(element5);
+}
+
+// Función para calcular el total en la tabla especificada
+function calcularCosto(element) {
+    let table = element.closest('table');
+    let rows = table.rows;
+    for (let i = 1; i < rows.length; i++) {
+        let cantidad = rows[i].cells[0].childNodes[0].value;
+        let cu = rows[i].cells[3].childNodes[0].value;
+        let costo = rows[i].cells[4].childNodes[0];
+        if (cantidad && cu) {
+            costo.value = cantidad * cu;  // Asegúrate de manejar la conversión a números adecuadamente
+        }
+    }
+}
+
+// Función para agregar una nueva fila a una tabla específica
+function addRowToSpecificTable(table) {
+    let rowCount = table.rows.length;
+    let row = table.insertRow(rowCount);
+
+    // Insertar celdas en la nueva fila
+    let cell1 = row.insertCell(0);
+    let element1 = document.createElement("input");
+    element1.type = "text";
+    element1.name = "cantidad";
+    element1.onchange = function() { calcularTotal(this); };
+    cell1.appendChild(element1);
+
+    let cell2 = row.insertCell(1);
+    let element2 = document.createElement("input");
+    element2.type = "text";
+    element2.name = "um";
+    cell2.appendChild(element2);
+
+    let cell3 = row.insertCell(2);
+    let element3 = document.createElement("input");
+    element3.type = "text";
+    element3.name = "descripcion";
+    cell3.appendChild(element3);
+
+    let cell4 = row.insertCell(3);
+    let element4 = document.createElement("input");
+    element4.type = "text";
+    element4.name = "cu";
+    element4.onchange = function() { calcularTotal(this); };
+    cell4.appendChild(element4);
+
+    let cell5 = row.insertCell(4);
+    let element5 = document.createElement("input");
+    element5.type = "text";
+    element5.name = "costo";
+    element5.readOnly = true;
+    cell5.appendChild(element5);
+}
+
+// Función para agregar una nueva tabla al contenedor especificado
+function addTable() {
+    let container = document.getElementById('tableContainer');
+    let div = document.createElement('div');
+    div.classList.add('dynamicTableContainer');
+    div.style.display = "flex";
+    div.style.flexDirection = "column";
+    div.style.alignItems = "center";
+    div.style.marginTop = "10px";
+    div.innerHTML = `
+        <table border="1" class="dynamicTable">
+            <tr>
+                <th>Cantidad</th>
+                <th>UM</th>
+                <th>Descripción</th>
+                <th>C.U.</th>
+                <th>Costo</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="cantidad" onchange="calcularTotal(this)"/></td>
+                <td><input type="text" name="um" /></td> 
+                <td><input type="text" name="descripcion" /></td>
+                <td><input type="text" name="cu" onchange="calcularTotal(this)"/></td> 
+                <td><input type="text" name="costo" readonly/></td> 
+            </tr>
+        </table>
+        <div class="button-container" style="align-self: flex-start;">
+            <button class="add" type="button" onclick="addRowToSpecificTable(this.parentElement.previousElementSibling)">+</button>
+            <button class="remove" type="button" onclick="removeRowFromSpecificTable(this.parentElement.previousElementSibling)">-</button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+// Función para quitar la última fila de la tabla 'dynamicTable'
+function removeRow(tableID) {
+    let table = document.getElementById(tableID);
+    let rowCount = table.rows.length;
+    // No eliminar la fila de encabezado
+    if (rowCount > 2) {
+        table.deleteRow(rowCount - 1);
+    }
+}
+
+// Función para quitar la última fila de la tabla específica
+function removeRowFromSpecificTable(table) {
+    let rowCount = table.rows.length;
+    // No eliminar la fila de encabezado
+    if (rowCount > 2) {
+        table.deleteRow(rowCount - 1);
+    }
+}
+
+// Función para quitar la última tabla agregada
+function removeTable() {
+    let containers = document.querySelectorAll('div.dynamicTableContainer');
+    if (containers.length > 0) {
+        let lastContainer = containers[containers.length - 1];
+        lastContainer.remove();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const url = 'https://script.google.com/macros/s/AKfycbxtmQt8O_g7auWw4P2Ay2Xy-KrmwMasp38cbkPOyP7lR2LRIusOZOp0AMbJvOxAkvtu/exec';
+
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Datos obtenidos:', data);
+        const select1 = document.getElementById('selectorHoja1');
+        const select2 = document.getElementById('selectorHoja2');
+
+        // Verificar que los elementos select se obtienen correctamente
+        console.log('select1:', select1);
+        console.log('select2:', select2);
+
+        if (data['BD PERSONAL OP.']) {
+            console.log('Datos de Hoja1:', data['BD PERSONAL OP.']);
+            data['BD PERSONAL OP.'].forEach(row => {
+                const option = document.createElement('option');
+                option.text = row.join(' - ');
+                select1.add(option);
+                console.log('Añadida opción a select1:', option);
+            });
+        } else {
+            console.warn('No se encontraron datos para Hoja1');
+        }
+
+        if (data['BD CLIENTES']) {
+            console.log('Datos de Hoja2:', data['BD CLIENTES']);
+            data['BD CLIENTES'].forEach(row => {
+                const option = document.createElement('option');
+                option.text = row.join(' - ');
+                select2.add(option);
+                console.log('Añadida opción a select2:', option);
+            });
+        } else {
+            console.warn('No se encontraron datos para Hoja2');
+        }
+    })
+    .catch(error => {
+        console.error('Hubo un problema con la operación fetch:', error);
+    });
+});
+
+function limpiarFormulario() {
+    document.querySelector('form[name="google-sheet"]').reset();
+    let dynamicTables = document.querySelectorAll('div.dynamicTableContainer');
+    dynamicTables.forEach(function(div) {
+        div.remove();
+    });
+    let mainTableRows = document.querySelectorAll('#dynamicTable tr');
+    mainTableRows.forEach(function(row, index) {
+        if (index > 0) {  // No eliminar la fila de encabezado
+            row.remove();
+        }
+    });
+    // Añadir una fila en la tabla principal si se eliminó todo
+    addRow('dynamicTable');
+}
+
+function generateFolio() {
+    var folio = Math.random().toString(36).substring(2, 8).toUpperCase();
+    document.getElementById('folioInput').value = folio;
+}
+
+function toggleSections() {
+    var preCotizacion = document.getElementById("preCotizacion").checked;
+    var cotizacion = document.getElementById("cotizacion").checked;
+    var titulo = document.getElementById("tipoCotizacionTitulo");
+    var folioSection = document.getElementById('folio-section');
+    const folioButton = document.getElementById('folioButton');
+    var gastosSection = document.getElementById('gastos-section');
+    var dynamicTableContainer = document.getElementById('dynamicTableContainer');
+    var buttonContainer = document.getElementById('buttonContainer');
+    var finalTableContainer = document.getElementById('finalTableContainer');
+
+    if (preCotizacion) {
+        titulo.textContent = "Pre Cotización";
+        folioSection.style.display = 'flex';
+        folioButton.style.display = 'flex';
+        gastosSection.style.display = 'none';
+        dynamicTableContainer.style.display = 'none';
+        buttonContainer.style.display = 'none';
+        finalTableContainer.style.display = 'none';
+    } else {
+        titulo.textContent = "Cotización";
+        folioSection.style.display = 'flex';
+        folioButton.style.display = 'none';
+        gastosSection.style.display = 'flex';
+        dynamicTableContainer.style.display = 'flex';
+        buttonContainer.style.display = 'flex';
+        finalTableContainer.style.display = 'flex';
+    }
+}
+
+window.onload = toggleSections;
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('cotizacion').checked = true;
+    toggleSections(); // Llama a la función cuando la página se carga
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const url = 'https://script.google.com/macros/s/AKfycbxtmQt8O_g7auWw4P2Ay2Xy-KrmwMasp38cbkPOyP7lR2LRIusOZOp0AMbJvOxAkvtu/exec';
+
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Datos obtenidos:', data);
+        const select1 = document.getElementById('selectorHoja1');
+        const select2 = document.getElementById('selectorHoja2');
+
+        // Verificar que los elementos select se obtienen correctamente
+        console.log('select1:', select1);
+        console.log('select2:', select2);
+
+        if (data['BD PERSONAL OP.']) {
+            console.log('Datos de Hoja1:', data['BD PERSONAL OP.']);
+            data['BD PERSONAL OP.'].forEach(row => {
+                const option = document.createElement('option');
+                option.text = row.join(' - ');
+                select1.add(option);
+                console.log('Añadida opción a select1:', option);
+            });
+        } else {
+            console.warn('No se encontraron datos para Hoja1');
+        }
+
+        if (data['BD CLIENTES']) {
+            console.log('Datos de Hoja2:', data['BD CLIENTES']);
+            data['BD CLIENTES'].forEach(row => {
+                const option = document.createElement('option');
+                option.text = row.join(' - ');
+                select2.add(option);
+                console.log('Añadida opción a select2:', option);
+            });
+        } else {
+            console.warn('No se encontraron datos para Hoja2');
+        }
+    })
+    .catch(error => {
+        console.error('Hubo un problema con la operación fetch:', error);
+    });
+}); 
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="nav-links"> 
+            <li><a href="#">Solicitud</a></li>
+            <li><a href="#">Hoja de validación</a></li> 
+            <li><a href="#">Cotización / Pre Cotización</a></li>
+            <li><a href="#">Costo Operativo</a></li>
+        </ul>
+        <div class="selector">
+            <select id="opciones" name="opciones" onchange="cambiarContenido()">
+                <option value="">Selecciona una opción</option>
+                <option value="Servicio">Servicio</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="Complementario">Complementario</option>
+                
+            </select>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" name="Envíar">Envíar</button>
+            <button type="reset" class="reset" name="Limpiar" onclick="limpiarFormulario()">Limpiar</button>
+        </div>
+    </nav>
+    <div id="contenido">
+        <p>Selecciona una opción.</p>
+    </div>
+</body>
+</html>
